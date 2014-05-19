@@ -3,15 +3,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Video</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//www.google.com/jsapi" type="text/javascript"></script>
  <script type="text/javascript">
   google.load("swfobject", "2.1");
 </script>  
+<style>
+  #myytplayer{
+    margin-left: -8px;
+    margin-top: -8px;
+  }
+</style>
 <script type="text/javascript">
-    var videos = ["xnjE2RBfn-s","eaKSr1Vbb4g","aoeOxecd0qw","jxvi5ozyRqE","YohlqPqymz4","Yp2wgDzojL0","NsdFamnYAz8","4rf2o9Ej2rE","DENaU_y1VY0","icUpRUNqSQs","TxHmxiymtmw","N75IJQYJCzY","wYCOKDfD8o8","b6hdB_VBIpQ"];//youtube影片id
+  var videos = ["xnjE2RBfn-s","eaKSr1Vbb4g","aoeOxecd0qw","jxvi5ozyRqE","YohlqPqymz4","Yp2wgDzojL0","NsdFamnYAz8","4rf2o9Ej2rE","DENaU_y1VY0","icUpRUNqSQs","TxHmxiymtmw","N75IJQYJCzY","wYCOKDfD8o8","b6hdB_VBIpQ"];//youtube影片id
+  google.setOnLoadCallback(loadPlayer());//google api=>讀取網頁後執行loadplayer()
 
-    google.setOnLoadCallback(loadPlayer());//google api=>讀取網頁後執行loadplayer()
+
+
+    function resizePlayer() {
+      var playerObj = document.getElementById("myytplayer");
+      playerObj.height = $(window).height();
+      playerObj.width = $(window).width();
+    }
+
+    
+
+    
     var num=0;//記錄目前第幾部影片
 
     function loadVideo(videos) {//讀取影片id
@@ -25,8 +42,10 @@
       var video = videos[0];//預設第一部影片id
       var params = { allowScriptAccess: "always" };
       var atts = { id: "myytplayer" };
-      swfobject.embedSWF("http://www.youtube.com/v/"+video+"?rel=0&enablejsapi=1&playerapiid=ytplayer", "ytapiplayer", "560", "315", "8", null, null, params, atts);
+      //swfobject.embedSWF("http://www.youtube.com/v/"+video+"?rel=0&enablejsapi=1&playerapiid=ytplayer", "ytapiplayer", "480", "295", "8", null, null, params, atts);
+      swfobject.embedSWF("http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=ytPlayer", "ytapiplayer", "480", "295", "8", null, null, params, atts);
     }
+      
 
    
     
@@ -45,6 +64,7 @@
       ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
       ytplayer.addEventListener("onError", "onPlayerError");
       ytplayer.setPlaybackQuality("hd1080");//預設畫質1080p;720p則為hd720;另還有 large,small
+      ytplayer.cueVideoById("xnjE2RBfn-s");
     }
 
     function onytplayerStateChange(newState) {//偵測目前影片動態
@@ -75,6 +95,11 @@
         ytplayer.stopVideo();
       }
     }
+    function pauseVideo() {
+      if (ytplayer) {
+        ytplayer.pauseVideo();
+      }
+    }
 
     function getPlayerState() {//取得影片狀態
       if (ytplayer) {
@@ -101,10 +126,12 @@
 </script>
 </head>
 <body>
-
   <div id="ytapiplayer">
     You need Flash player 8+ and JavaScript enabled to view this video.
   </div>
   <p>Current Time: <span id="videotime">--:--</span> | Duration: <span id="videoduration">--:--</span></p>
+  <button onclick="resizePlayer()">Full Screen</button>
+  <button onclick="pauseVideo()">Pause</button>
+  <button onclick="play()">Play</button>
 </body>
 </html>
